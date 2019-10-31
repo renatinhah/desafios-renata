@@ -10,8 +10,8 @@ import com.challenge.interfaces.Calculavel;
 public class CalculadorDeClasses implements Calculavel{
 
 	@Override
-	public BigDecimal somar(Class classe) {
-		Field[] campos = classe.getDeclaredFields();
+	public BigDecimal somar(Object classe) throws IllegalAccessException {
+		Field[] campos = classe.getClass().getDeclaredFields();
 		int somaAtributos = 0;
 		for (Field campo : campos) {
 			if(campo.isAnnotationPresent(Somar.class)) {
@@ -22,8 +22,8 @@ public class CalculadorDeClasses implements Calculavel{
 	}
 
 	@Override
-	public BigDecimal subtrair(Class classe) {
-		Field[] campos = classe.getDeclaredFields();
+	public BigDecimal subtrair(Object classe) throws IllegalAccessException{
+		Field[] campos = classe.getClass().getDeclaredFields();
 		int somaAtributos = 0;
 		for (Field campo : campos) {
 			if(campo.isAnnotationPresent(Subtrair.class)) {
@@ -34,28 +34,20 @@ public class CalculadorDeClasses implements Calculavel{
 	}
 
 	@Override
-	public void total(Class classeA, Class classeB) {
-		Field[] camposClasseA = classeA.getDeclaredFields();
-		Field[] camposClasseB = classeB.getDeclaredFields();
+	public BigDecimal totalizar(Object classe) throws IllegalAccessException{
+		Field[] campos = classe.getClass().getDeclaredFields();
 		
-		int somaAtributosClasseA = 0;
-		int somaAtributosClasseB = 0;
+		int somaAnnotationSoma = 0;
+		int somaAnnotationSubtrai = 0;
 		
-		for (Field campo : camposClasseA) {
+		for (Field campo : campos) {
 			if(campo.isAnnotationPresent(Somar.class)) {
-				somaAtributosClasseA++;
+				somaAnnotationSoma++;
+			} else if(campo.isAnnotationPresent(Somar.class)) {
+				somaAnnotationSubtrai++;
 			}
 		}
-		for (Field campo : camposClasseB) {
-			if(campo.isAnnotationPresent(Subtrair.class)) {
-				somaAtributosClasseB++;
-			}
-		}
-	    
-		System.out.println(somaAtributosClasseA - somaAtributosClasseB);
-		
+		return new BigDecimal(somaAnnotationSoma - somaAnnotationSubtrai);
 	}
-	
-	
 
 }
